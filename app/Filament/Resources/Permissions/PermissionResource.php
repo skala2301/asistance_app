@@ -9,6 +9,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\Resource;
@@ -27,7 +28,13 @@ class PermissionResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('status_id'),
+                Select::make('status_id')
+                    ->relationship(
+                        'status', 
+                        'label',  // Changed from 'name' to 'label' to show "Enabled" instead of "enabled"
+                        fn ($query) => $query->whereHas('type', function ($q) {
+                            $q->where('name', class_basename(Permission::class));
+                    })),
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('label')
@@ -42,14 +49,11 @@ class PermissionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
-                TextColumn::make('status_id')
-                    ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('label')
+                    ->searchable(),
+                TextColumn::make('status.label')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
