@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable, HasUuids;
@@ -62,6 +64,17 @@ class User extends Authenticatable
 
     public function roles(): BelongsToMany
     {
-        return belongsToMany(Role::class, 'user_roles');
+        return $this->belongsToMany(Role::class, 'user_roles')->using(UserRole::class);
+    }
+
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        $userRoles = $this->roles;
+        $hasAdminRole = false;
+        if($userRoles->count() > 0){
+            $hasAdminRole = $userRoles->where('name', 'admin')->count() > 0;
+        }
+        return $hasAdminRole &&  $this->hasVerifiedEmail();
     }
 }
