@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\Roles;
+namespace App\Filament\Resources\Permissions;
 
-use App\Filament\Resources\Roles\Pages\ManageRoles;
-use App\Models\Role;
+use App\Filament\Resources\Permissions\Pages\ManagePermissions;
+use App\Models\Permission;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Resources\Resource;
@@ -18,9 +17,9 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class RoleResource extends Resource
+class PermissionResource extends Resource
 {
-    protected static ?string $model = Role::class;
+    protected static ?string $model = Permission::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
@@ -28,13 +27,7 @@ class RoleResource extends Resource
     {
         return $schema
             ->components([
-                Select::make('status_id')
-                    ->relationship(
-                        'status', 
-                        'label',  // Changed from 'name' to 'label' to show "Enabled" instead of "enabled"
-                        fn ($query) => $query->whereHas('type', function ($q) {
-                            $q->where('name', class_basename(Role::class));
-                    })),
+                TextInput::make('status_id'),
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('label')
@@ -49,12 +42,14 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('label')
-                    ->label('Role')
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->searchable(),
+                TextColumn::make('status_id')
                     ->searchable(),
                 TextColumn::make('name')
                     ->searchable(),
-                TextColumn::make('status.label')
+                TextColumn::make('label')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -82,7 +77,7 @@ class RoleResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ManageRoles::route('/'),
+            'index' => ManagePermissions::route('/'),
         ];
     }
 }
