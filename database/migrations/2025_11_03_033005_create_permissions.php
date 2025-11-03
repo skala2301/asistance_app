@@ -11,7 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::table('user_roles', function(Blueprint $table) {
+            $table->timestamps();
+        });
+
+        Schema::create('permissions', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('status_id')
                 ->nullable()
@@ -24,17 +28,19 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('user_roles', function (Blueprint $table) {
+        Schema::create('role_permissions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('user_id')
-                ->constrained('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
             $table->foreignUuid('role_id')
                 ->constrained('roles')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->foreignUuid('permission_id')
+                ->constrained('permissions')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->timestamps();
         });
+
     }
 
     /**
@@ -42,7 +48,13 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_roles');
-        Schema::dropIfExists('roles');
+        // Drop tables in reverse order (because of foreign keys)
+        Schema::dropIfExists('role_permissions');
+        Schema::dropIfExists('permissions');
+        
+        // Remove the timestamps from user_roles table
+        Schema::table('user_roles', function(Blueprint $table) {
+            $table->dropTimestamps();
+        });
     }
 };

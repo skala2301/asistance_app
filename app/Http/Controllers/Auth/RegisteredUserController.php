@@ -46,9 +46,9 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        //Auth::login($user);
 
-        $request->session()->regenerate();
+        //$request->session()->regenerate();
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
