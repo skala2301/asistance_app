@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Authenticatable
@@ -57,5 +58,10 @@ class User extends Authenticatable
     public function status(): BelongsTo
     {
         return $this->belongsTo(Status::class);
+    }
+
+    public function roles(): BelongsToMany
+    {
+        return belongsToMany(Role::class, 'user_roles');
     }
 }
