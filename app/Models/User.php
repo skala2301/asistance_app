@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Authenticatable
@@ -53,8 +54,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function status(): MorphOne
+    public function status(): BelongsTo
     {
-        return $this->morphOne(Status::class, 'statusable');
+        return $this->belongsTo(Status::class);
     }
 }
