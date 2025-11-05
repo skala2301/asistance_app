@@ -4,6 +4,8 @@ namespace App\Filament\Resources\Roles;
 
 use App\Filament\Resources\Roles\Pages\ManageRoles;
 use App\Models\Role;
+use App\Models\Permission;
+use App\Models\Type;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -39,6 +41,19 @@ class RoleResource extends Resource
                     ->required(),
                 TextInput::make('label')
                     ->required(),
+                Select::make('permissions')
+                    ->relationship(
+                        'permissions',
+                        'label',
+                        fn ($query) => $query->whereHas('status', function ($q) {
+                            $q->where('type_id', 
+                                Type::where('name', class_basename(Permission::class))->first()?->id
+                            )->where('name', 'enabled');
+                        })
+                    )
+                    ->multiple()
+                    ->preload()
+                    ->searchable(),
                 Textarea::make('description')
                     ->required()
                     ->columnSpanFull(),
