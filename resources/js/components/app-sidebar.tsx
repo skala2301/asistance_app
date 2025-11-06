@@ -10,7 +10,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard, students, courses, assistance } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
@@ -25,17 +25,17 @@ const mainNavItems: NavItem[] = [
     //Extra sections
     {
         title: 'Courses',
-        href: dashboard(),
+        href: courses(),
         icon: LayoutGrid,
     },
     {
         title: 'Students',
-        href: dashboard(),
+        href: students(),
         icon: LayoutGrid,
     },
     {
         title: 'Lists',
-        href: dashboard(),
+        href: assistance(),
         icon: LayoutGrid,
     },
 ];

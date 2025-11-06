@@ -11,6 +11,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
+    Route::get('courses', function () {
+        return Inertia::render('courses');
+    })->name('courses');
+    Route::get('students', function () {
+        return Inertia::render('students');
+    })->name('students');
+    Route::get('assistance', function () {
+        return Inertia::render('assistance');
+    })->name('assistance');
 });
 
 require __DIR__.'/settings.php';
