@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Status extends Model
+class Permission extends Model
 {
     use HasFactory, HasUuids;
     protected $keyType = 'string';
@@ -17,17 +16,17 @@ class Status extends Model
     protected $fillable = [
         'name',
         'label',
-        'type_id',
+        'description',
+        'status_id'
     ];
 
-    public function users(): HasMany
+    public function roles(): BelongsToMany
     {
-        return $this->hasMany(User::class);
+        return $this->belongsToMany(Role::class, 'role_permissions')->using(RolePermission::class);
     }
 
-    public function type(): BelongsTo
+    public function status(): BelongsTo
     {
-        return $this->belongsTo(Type::class);
+        return $this->belongsTo(Status::class);
     }
-
 }

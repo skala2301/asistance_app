@@ -43,7 +43,12 @@ class LoginRequest extends FormRequest
 
         /** @var User|null $user */
         $user = Auth::getProvider()->retrieveByCredentials($this->only('email', 'password'));
-
+        $verified_date = $user->email_verified_at;
+        if(!isset($verified_date) || $verified_date > now()){
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'),
+            ]);
+        }
         if (! $user || ! Auth::getProvider()->validateCredentials($user, $this->only('password'))) {
             RateLimiter::hit($this->throttleKey());
 

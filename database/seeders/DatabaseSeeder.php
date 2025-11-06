@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Status;
+use App\Models\Type;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -25,6 +27,23 @@ class DatabaseSeeder extends Seeder
         //     ]
         // );
 
+        $userType = Type::firstOrCreate([
+            'name' => class_basename(User::class), 
+            'label' => class_basename(User::class)." Type", 
+            'description' => "This is the type for statuses used in users"
+        ]);
+
+        Status::firstOrCreate([
+            'name'=>'enabled', 
+            'label' => 'Enabled',
+            'type_id' => $userType->id 
+        ]);
+
+        Status::firstOrCreate([
+            'name'=>'disabled', 
+            'label' => 'Disabled',
+            'type_id' => $userType->id 
+        ]);
         
     }
 }
